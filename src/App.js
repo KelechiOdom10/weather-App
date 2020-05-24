@@ -1,43 +1,72 @@
-import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
+import React, { useState } from "react";
 import "./App.css";
 
+const api ={
+  key: '6891d905a6bf5f955acd5690c86652ec',
+  base: 'http://api.openweathermap.org/data/2.5/'
+}
+
 function App() {
-  const apiKey = '6891d905a6bf5f955acd5690c86652ec';
-  const [cityName, setCityName] = useState('London');
-  const [unit, setUnit] = useState('metric')
+  const [cityName, setCityName] = useState('');
   const [weatherData, setWeatherData] = useState([]);
 
-  useEffect(() => {
-    fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=${unit}&APPID=${apiKey}`,
-    )
-    .then(response => response.json())
-    .then(response => {
-        console.log(response)
-        setWeatherData([response])
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [cityName]);
+  const handleChange = event => {
+    setCityName(event.target.value)
+  }
+
+  const search = event => {
+    if (event.key === "Enter") {
+      fetch(
+        `${api.base}weather?q=${cityName}&units=metric&APPID=${api.key}`
+      )
+      .then(response => response.json())
+      .then(response => {
+          setCityName('');
+          setWeatherData([response]);
+          console.log(response);
+      })
+    }  
+  }
+
+  const numToDate = (num) =>{
+    return new Date(num *1000).toLocaleDateString();
+  }
+
+  const numToTime = (num) =>{
+    return new Date(num * 1000).toLocaleTimeString();
+  }
+  
+  const roundUp = (num) =>{
+    return Math.ceil(num)
+  }
+
+  const weatherInfo = weatherData.map((info) => {
+    return (
+      <div key={`${info.id}`}>
+        <h1>Name: {`${info.name}, ${info.sys.country}`}</h1>
+        <p>Date: {numToDate(info.dt)}</p>
+        <p>Time: {numToTime(info.dt)}</p>
+        <h2>Main Temp: {info.main.temp}&deg;C</h2>
+        <p>Feels like {roundUp(info.main.feels_like)}&deg;C</p>
+        <p>Humidity: {info.main.humidity}%</p>
+        <p><span><img src={`http://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`} alt='Weather icon' /></span>Weather Description: {info.weather[0].description}</p>
+        <p>Wind: {info.wind.speed}m/s</p>
+        <p>Sunrise: {numToTime(info.sys.sunrise)}</p>
+        <p>Sunset: {numToTime(info.sys.sunset)}</p>
+      </div>
+    );
+  })
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <input 
+          type='text' 
+          onChange={handleChange} 
+          value={cityName} 
+          onKeyPress={search}
+        />
+        <hr />
+        {weatherInfo.length !== 0 ? <div>{weatherInfo}</div> : <p>Search in the input field to get weather</p> }
     </div>
   );
 }
