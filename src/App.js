@@ -4,12 +4,13 @@ import "./App.css";
 
 function App() {
   const apiKey = '6891d905a6bf5f955acd5690c86652ec';
-  const [cityName, setCityName] = useState('London')
+  const [cityName, setCityName] = useState('London');
+  const [unit, setUnit] = useState('metric')
   const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
     fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&APPID=${apiKey}`,
+      `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=${unit}&APPID=${apiKey}`,
     )
     .then(response => response.json())
     .then(response => {
