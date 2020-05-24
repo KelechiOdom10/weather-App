@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
+import WeatherCard from "./components/WeatherCard";
 
 const api ={
   key: '6891d905a6bf5f955acd5690c86652ec',
@@ -42,18 +43,21 @@ function App() {
 
   const weatherInfo = weatherData.map((info) => {
     return (
-      <div key={`${info.id}`}>
-        <h1>Name: {`${info.name}, ${info.sys.country}`}</h1>
-        <p>Date: {numToDate(info.dt)}</p>
-        <p>Time: {numToTime(info.dt)}</p>
-        <h2>Main Temp: {info.main.temp}&deg;C</h2>
-        <p>Feels like {roundUp(info.main.feels_like)}&deg;C</p>
-        <p>Humidity: {info.main.humidity}%</p>
-        <p><span><img src={`http://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`} alt='Weather icon' /></span>Weather Description: {info.weather[0].description}</p>
-        <p>Wind: {info.wind.speed}m/s</p>
-        <p>Sunrise: {numToTime(info.sys.sunrise)}</p>
-        <p>Sunset: {numToTime(info.sys.sunset)}</p>
-      </div>
+        <WeatherCard 
+          key = {`${info.id}`}
+          name = {info.name}
+          country = {info.sys.country}
+          date = {numToDate(info.dt)}
+          time = {numToTime(info.dt)}
+          temp = {roundUp(info.main.temp)}
+          feelsLike = {roundUp(info.main.feels_like)}
+          humidity = {info.main.humidity}
+          icon = {`http://openweathermap.org/img/wn/${info.weather[0].icon}@4x.png`}
+          description = {info.weather[0].description}
+          wind = {info.wind.speed}
+          sunrise = {numToTime(info.sys.sunrise)}
+          sunset = {numToTime(info.sys.sunset)}
+        />
     );
   })
 
