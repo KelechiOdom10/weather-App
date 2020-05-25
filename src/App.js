@@ -15,7 +15,7 @@ function App() {
     setCityName(event.target.value)
   }
 
-  const search = event => {
+  const handleSearch = event => {
     if (event.key === "Enter") {
       fetch(
         `${api.base}weather?q=${cityName}&units=metric&APPID=${api.key}`
@@ -62,15 +62,20 @@ function App() {
   })
 
   return (
-    <div className="App">
-        <input 
-          type='text' 
-          onChange={handleChange} 
-          value={cityName} 
-          onKeyPress={search}
-        />
-        <hr />
-        {weatherInfo.length !== 0 ? <div>{weatherInfo}</div> : <p>Search in the input field to get weather</p> }
+    <div className={(typeof weatherData[0] != "undefined") ? ((weatherData[0].main.temp > 16) ? 'app warm' : 'app') : 'app'}>
+      <div className='WeatherApp'>
+      <div className="search-box">
+          <input 
+            className='search-bar'
+            placeholder='Enter City Name'
+            type='text' 
+            onChange={handleChange} 
+            value={cityName} 
+            onKeyPress={handleSearch}
+          />
+        </div>
+        {weatherInfo.length !== 0 ? <div>{weatherInfo}</div> : <p className='fallBackMessage'>Search in the input field to get weather</p> }
+      </div>
     </div>
   );
 }
